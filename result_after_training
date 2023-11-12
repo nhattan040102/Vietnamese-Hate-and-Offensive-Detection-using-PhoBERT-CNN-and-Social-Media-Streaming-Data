@@ -1,0 +1,364 @@
+              precision    recall  f1-score   support
+
+           0       0.97      0.87      0.92      2424
+           1       0.00      0.00      0.00         0
+           2       0.40      0.44      0.42       248
+
+    accuracy                           0.83      2672
+   macro avg       0.46      0.44      0.44      2672
+weighted avg       0.91      0.83      0.87      2672
+
+accuracy = 0.83
+model saved
+Epoch: 01 | Epoch Time: 1m 34s
+	Train Loss: 0.545 | Train acc: 82.98%
+	 Val. Loss: 0.473 |  Val. acc: 83.16%
+	 Val. Loss: 0.473 |  Val. F1: 44.44%
+=============Epoch Ended==============
+100%|██████████| 188/188 [01:28<00:00,  2.13it/s]
+100%|██████████| 21/21 [00:03<00:00,  6.96it/s]
+              precision    recall  f1-score   support
+
+           0       0.97      0.88      0.93      2405
+           1       0.11      0.62      0.18        37
+           2       0.48      0.57      0.52       230
+
+    accuracy                           0.85      2672
+   macro avg       0.52      0.69      0.54      2672
+weighted avg       0.92      0.85      0.88      2672
+
+accuracy = 0.85
+model saved
+Epoch: 02 | Epoch Time: 1m 31s
+	Train Loss: 0.424 | Train acc: 84.86%
+	 Val. Loss: 0.415 |  Val. acc: 85.37%
+	 Val. Loss: 0.415 |  Val. F1: 54.37%
+=============Epoch Ended==============
+100%|██████████| 188/188 [01:28<00:00,  2.11it/s]
+100%|██████████| 21/21 [00:02<00:00,  7.04it/s]
+              precision    recall  f1-score   support
+
+           0       0.95      0.91      0.93      2287
+           1       0.27      0.59      0.37        97
+           2       0.58      0.54      0.56       288
+
+    accuracy                           0.86      2672
+   macro avg       0.60      0.68      0.62      2672
+weighted avg       0.89      0.86      0.87      2672
+
+accuracy = 0.86
+model saved
+Epoch: 03 | Epoch Time: 1m 31s
+	Train Loss: 0.361 | Train acc: 86.80%
+	 Val. Loss: 0.397 |  Val. acc: 85.93%
+	 Val. Loss: 0.397 |  Val. F1: 61.95%
+=============Epoch Ended==============
+100%|██████████| 188/188 [01:28<00:00,  2.12it/s]
+100%|██████████| 21/21 [00:02<00:00,  7.10it/s]
+              precision    recall  f1-score   support
+
+           0       0.95      0.91      0.93      2274
+           1       0.34      0.57      0.43       126
+           2       0.56      0.56      0.56       272
+
+    accuracy                           0.86      2672
+   macro avg       0.62      0.68      0.64      2672
+weighted avg       0.88      0.86      0.87      2672
+
+accuracy = 0.86
+model saved
+Epoch: 04 | Epoch Time: 1m 31s
+	Train Loss: 0.317 | Train acc: 88.40%
+	 Val. Loss: 0.384 |  Val. acc: 86.08%
+	 Val. Loss: 0.384 |  Val. F1: 63.79%
+=============Epoch Ended==============
+100%|██████████| 188/188 [01:28<00:00,  2.12it/s]
+100%|██████████| 21/21 [00:02<00:00,  7.06it/s]
+              precision    recall  f1-score   support
+
+           0       0.96      0.91      0.93      2305
+           1       0.33      0.60      0.43       117
+           2       0.54      0.58      0.56       250
+
+    accuracy                           0.86      2672
+   macro avg       0.61      0.70      0.64      2672
+weighted avg       0.89      0.86      0.87      2672
+
+accuracy = 0.86
+model saved
+Epoch: 05 | Epoch Time: 1m 31s
+	Train Loss: 0.274 | Train acc: 90.02%
+	 Val. Loss: 0.392 |  Val. acc: 86.45%
+	 Val. Loss: 0.392 |  Val. F1: 63.85%
+=============Epoch Ended==============
+100%|██████████| 188/188 [01:28<00:00,  2.13it/s]
+100%|██████████| 21/21 [00:02<00:00,  7.08it/s]
+              precision    recall  f1-score   support
+
+           0       0.95      0.92      0.93      2252
+           1       0.36      0.54      0.43       143
+           2       0.59      0.57      0.58       277
+
+    accuracy                           0.86      2672
+   macro avg       0.63      0.68      0.65      2672
+weighted avg       0.88      0.86      0.87      2672
+
+accuracy = 0.86
+model saved
+Epoch: 06 | Epoch Time: 1m 31s
+	Train Loss: 0.240 | Train acc: 91.30%
+	 Val. Loss: 0.416 |  Val. acc: 86.30%
+	 Val. Loss: 0.416 |  Val. F1: 64.80%
+=============Epoch Ended==============
+100%|██████████| 188/188 [01:28<00:00,  2.13it/s]
+100%|██████████| 21/21 [00:02<00:00,  7.06it/s]
+              precision    recall  f1-score   support
+
+           0       0.95      0.91      0.93      2278
+           1       0.28      0.55      0.37       109
+           2       0.57      0.54      0.55       285
+
+    accuracy                           0.86      2672
+   macro avg       0.60      0.67      0.62      2672
+weighted avg       0.88      0.86      0.87      2672
+
+accuracy = 0.86
+Epoch: 07 | Epoch Time: 1m 31s
+	Train Loss: 0.201 | Train acc: 92.77%
+	 Val. Loss: 0.439 |  Val. acc: 85.70%
+	 Val. Loss: 0.439 |  Val. F1: 61.83%
+=============Epoch Ended==============
+100%|██████████| 188/188 [01:28<00:00,  2.13it/s]
+100%|██████████| 21/21 [00:03<00:00,  7.00it/s]
+              precision    recall  f1-score   support
+
+           0       0.96      0.90      0.93      2340
+           1       0.34      0.59      0.43       124
+           2       0.49      0.64      0.56       208
+
+    accuracy                           0.87      2672
+   macro avg       0.60      0.71      0.64      2672
+weighted avg       0.90      0.87      0.88      2672
+
+accuracy = 0.87
+Epoch: 08 | Epoch Time: 1m 31s
+	Train Loss: 0.172 | Train acc: 93.95%
+	 Val. Loss: 0.465 |  Val. acc: 86.71%
+	 Val. Loss: 0.465 |  Val. F1: 64.10%
+=============Epoch Ended==============
+100%|██████████| 188/188 [01:28<00:00,  2.13it/s]
+100%|██████████| 21/21 [00:02<00:00,  7.06it/s]
+              precision    recall  f1-score   support
+
+           0       0.95      0.92      0.93      2270
+           1       0.36      0.51      0.43       150
+           2       0.53      0.56      0.54       252
+
+    accuracy                           0.86      2672
+   macro avg       0.61      0.66      0.63      2672
+weighted avg       0.88      0.86      0.87      2672
+
+accuracy = 0.86
+Epoch: 09 | Epoch Time: 1m 31s
+	Train Loss: 0.138 | Train acc: 95.35%
+	 Val. Loss: 0.504 |  Val. acc: 86.00%
+	 Val. Loss: 0.504 |  Val. F1: 63.39%
+=============Epoch Ended==============
+100%|██████████| 188/188 [01:28<00:00,  2.13it/s]
+100%|██████████| 21/21 [00:02<00:00,  7.06it/s]
+              precision    recall  f1-score   support
+
+           0       0.93      0.92      0.93      2211
+           1       0.48      0.49      0.48       209
+           2       0.52      0.56      0.54       252
+
+    accuracy                           0.85      2672
+   macro avg       0.64      0.66      0.65      2672
+weighted avg       0.86      0.85      0.85      2672
+
+accuracy = 0.85
+model saved
+Epoch: 10 | Epoch Time: 1m 31s
+	Train Loss: 0.118 | Train acc: 95.90%
+	 Val. Loss: 0.529 |  Val. acc: 85.33%
+	 Val. Loss: 0.529 |  Val. F1: 64.90%
+=============Epoch Ended==============
+100%|██████████| 188/188 [01:28<00:00,  2.12it/s]
+100%|██████████| 21/21 [00:02<00:00,  7.07it/s]
+              precision    recall  f1-score   support
+
+           0       0.94      0.92      0.93      2222
+           1       0.32      0.54      0.40       124
+           2       0.63      0.52      0.57       326
+
+    accuracy                           0.86      2672
+   macro avg       0.63      0.66      0.63      2672
+weighted avg       0.87      0.86      0.86      2672
+
+accuracy = 0.86
+Epoch: 11 | Epoch Time: 1m 31s
+	Train Loss: 0.094 | Train acc: 96.86%
+	 Val. Loss: 0.555 |  Val. acc: 85.52%
+	 Val. Loss: 0.555 |  Val. F1: 63.16%
+=============Epoch Ended==============
+100%|██████████| 188/188 [01:28<00:00,  2.12it/s]
+100%|██████████| 21/21 [00:02<00:00,  7.06it/s]
+              precision    recall  f1-score   support
+
+           0       0.92      0.93      0.92      2187
+           1       0.36      0.52      0.42       147
+           2       0.61      0.49      0.55       338
+
+    accuracy                           0.85      2672
+   macro avg       0.63      0.64      0.63      2672
+weighted avg       0.85      0.85      0.85      2672
+
+accuracy = 0.85
+Epoch: 12 | Epoch Time: 1m 31s
+	Train Loss: 0.080 | Train acc: 97.28%
+	 Val. Loss: 0.588 |  Val. acc: 84.77%
+	 Val. Loss: 0.588 |  Val. F1: 63.13%
+=============Epoch Ended==============
+100%|██████████| 188/188 [01:28<00:00,  2.13it/s]
+100%|██████████| 21/21 [00:02<00:00,  7.07it/s]
+              precision    recall  f1-score   support
+
+           0       0.95      0.91      0.93      2299
+           1       0.50      0.46      0.48       230
+           2       0.34      0.65      0.45       143
+
+    accuracy                           0.86      2672
+   macro avg       0.60      0.67      0.62      2672
+weighted avg       0.88      0.86      0.87      2672
+
+accuracy = 0.86
+Epoch: 13 | Epoch Time: 1m 31s
+	Train Loss: 0.085 | Train acc: 97.03%
+	 Val. Loss: 0.565 |  Val. acc: 85.67%
+	 Val. Loss: 0.565 |  Val. F1: 61.90%
+=============Epoch Ended==============
+100%|██████████| 188/188 [01:28<00:00,  2.13it/s]
+100%|██████████| 21/21 [00:02<00:00,  7.05it/s]
+              precision    recall  f1-score   support
+
+           0       0.93      0.92      0.93      2216
+           1       0.40      0.49      0.44       174
+           2       0.56      0.53      0.54       282
+
+    accuracy                           0.85      2672
+   macro avg       0.63      0.65      0.64      2672
+weighted avg       0.86      0.85      0.85      2672
+
+accuracy = 0.85
+Epoch: 14 | Epoch Time: 1m 31s
+	Train Loss: 0.069 | Train acc: 97.67%
+	 Val. Loss: 0.636 |  Val. acc: 85.10%
+	 Val. Loss: 0.636 |  Val. F1: 63.65%
+=============Epoch Ended==============
+100%|██████████| 188/188 [01:28<00:00,  2.13it/s]
+100%|██████████| 21/21 [00:02<00:00,  7.02it/s]
+              precision    recall  f1-score   support
+
+           0       0.94      0.92      0.93      2241
+           1       0.46      0.45      0.45       216
+           2       0.48      0.60      0.54       215
+
+    accuracy                           0.85      2672
+   macro avg       0.63      0.66      0.64      2672
+weighted avg       0.86      0.85      0.86      2672
+
+accuracy = 0.85
+Epoch: 15 | Epoch Time: 1m 31s
+	Train Loss: 0.051 | Train acc: 98.20%
+	 Val. Loss: 0.704 |  Val. acc: 85.48%
+	 Val. Loss: 0.704 |  Val. F1: 63.93%
+=============Epoch Ended==============
+100%|██████████| 188/188 [01:28<00:00,  2.13it/s]
+100%|██████████| 21/21 [00:02<00:00,  7.04it/s]
+              precision    recall  f1-score   support
+
+           0       0.93      0.92      0.93      2195
+           1       0.46      0.46      0.46       213
+           2       0.53      0.54      0.53       264
+
+    accuracy                           0.85      2672
+   macro avg       0.64      0.64      0.64      2672
+weighted avg       0.85      0.85      0.85      2672
+
+accuracy = 0.85
+Epoch: 16 | Epoch Time: 1m 31s
+	Train Loss: 0.053 | Train acc: 98.25%
+	 Val. Loss: 0.682 |  Val. acc: 84.96%
+	 Val. Loss: 0.682 |  Val. F1: 63.96%
+=============Epoch Ended==============
+100%|██████████| 188/188 [01:28<00:00,  2.13it/s]
+100%|██████████| 21/21 [00:02<00:00,  7.05it/s]
+              precision    recall  f1-score   support
+
+           0       0.94      0.92      0.93      2239
+           1       0.44      0.49      0.46       189
+           2       0.50      0.56      0.53       244
+
+    accuracy                           0.85      2672
+   macro avg       0.63      0.66      0.64      2672
+weighted avg       0.86      0.85      0.86      2672
+
+accuracy = 0.85
+Epoch: 17 | Epoch Time: 1m 31s
+	Train Loss: 0.047 | Train acc: 98.38%
+	 Val. Loss: 0.661 |  Val. acc: 85.40%
+	 Val. Loss: 0.661 |  Val. F1: 64.00%
+=============Epoch Ended==============
+100%|██████████| 188/188 [01:28<00:00,  2.13it/s]
+100%|██████████| 21/21 [00:02<00:00,  7.03it/s]
+              precision    recall  f1-score   support
+
+           0       0.94      0.92      0.93      2237
+           1       0.39      0.50      0.44       163
+           2       0.54      0.54      0.54       272
+
+    accuracy                           0.86      2672
+   macro avg       0.62      0.65      0.64      2672
+weighted avg       0.86      0.86      0.86      2672
+
+accuracy = 0.86
+Epoch: 18 | Epoch Time: 1m 31s
+	Train Loss: 0.039 | Train acc: 98.62%
+	 Val. Loss: 0.712 |  Val. acc: 85.52%
+	 Val. Loss: 0.712 |  Val. F1: 63.51%
+=============Epoch Ended==============
+100%|██████████| 188/188 [01:28<00:00,  2.13it/s]
+100%|██████████| 21/21 [00:02<00:00,  7.05it/s]
+              precision    recall  f1-score   support
+
+           0       0.95      0.91      0.93      2270
+           1       0.37      0.56      0.45       142
+           2       0.55      0.57      0.56       260
+
+    accuracy                           0.86      2672
+   macro avg       0.62      0.68      0.64      2672
+weighted avg       0.88      0.86      0.87      2672
+
+accuracy = 0.86
+Epoch: 19 | Epoch Time: 1m 31s
+	Train Loss: 0.041 | Train acc: 98.62%
+	 Val. Loss: 0.749 |  Val. acc: 86.04%
+	 Val. Loss: 0.749 |  Val. F1: 64.47%
+=============Epoch Ended==============
+100%|██████████| 188/188 [01:28<00:00,  2.13it/s]
+100%|██████████| 21/21 [00:02<00:00,  7.04it/s]              precision    recall  f1-score   support
+
+           0       0.94      0.92      0.93      2248
+           1       0.42      0.47      0.44       190
+           2       0.49      0.56      0.52       234
+
+    accuracy                           0.85      2672
+   macro avg       0.62      0.65      0.63      2672
+weighted avg       0.86      0.85      0.86      2672
+
+accuracy = 0.85
+Epoch: 20 | Epoch Time: 1m 31s
+	Train Loss: 0.038 | Train acc: 98.66%
+	 Val. Loss: 0.765 |  Val. acc: 85.29%
+	 Val. Loss: 0.765 |  Val. F1: 63.13%
+=============Epoch Ended==============
