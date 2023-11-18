@@ -1,11 +1,10 @@
 import pprint
 import sys
 from pathlib import Path
-from apiclient.discovery import build
+from googleapiclient.discovery import build
 from urllib.parse import urlparse, parse_qs
 import pandas as pd
 import numpy as np
-from confluent_kafka import Producer
 from kafka import KafkaProducer
 import logging
 import socket
@@ -14,16 +13,17 @@ import time
 import os
 import tensorflow as tf
 import pickle
-from tensorflow.keras.preprocessing import sequence
 from preprocessing import preprocessing
+from transformers import AutoTokenizer
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
 
 # Build service for calling the Youtube API:
 ## Arguments that need to passed to the build function
 DEVELOPER_KEY = "AIzaSyDbt-xdAOjDhJghQGVMxfbsSiSyCFJr1Jw"
 YOUTUBE_API_SERVICE_NAME = "youtube"
 YOUTUBE_API_VERSION = "v3"
-# video_link = "https://www.youtube.com/watch?v=-1X6Ak94Acs"
-video_link = sys.argv[1]
 
 ## creating Youtube Resource Object
 youtube_service = build(YOUTUBE_API_SERVICE_NAME,
@@ -31,18 +31,74 @@ youtube_service = build(YOUTUBE_API_SERVICE_NAME,
                         developerKey=DEVELOPER_KEY)
 
 
+class CNN(nn.Module):
+        def __init__(self, embedding_dim, n_filters, filter_sizes, output_dim,
+                 dropout, pad_idx):
+
+            super().__init__()
+
+            self.fc_input = nn.Linear(embedding_dim,embedding_dim)
+
+            self.conv_0 = nn.Conv1d(in_channels = embedding_dim,
+                                    out_channels = n_filters,
+                                    kernel_size = filter_sizes[0])
+
+            self.conv_1 = nn.Conv1d(in_channels = embedding_dim,
+                                    out_channels = n_filters,
+                                    kernel_size = filter_sizes[1])
+
+            self.conv_2 = nn.Conv1d(in_channels = embedding_dim,
+                                    out_channels = n_filters,
+                                    kernel_size = filter_sizes[2])
+
+            self.conv_3 = nn.Conv1d(in_channels = embedding_dim,
+                                    out_channels = n_filters,
+                                    kernel_size = filter_sizes[3])
+
+            self.fc = nn.Linear(len(filter_sizes) * n_filters, output_dim)
+
+            self.dropout = nn.Dropout(dropout)
+
+        def forward(self, encoded):
+
+            #embedded = [batch size, sent len, emb dim]
+            embedded = self.fc_input(encoded)
+            #print(embedded.shape)
+
+            embedded = embedded.permute(0, 2, 1)
+            #print(embedded.shape)
+
+            #embedded = [batch size, emb dim, sent len]
+
+            conved_0 = F.relu(self.conv_0(embedded))
+            conved_1 = F.relu(self.conv_1(embedded))
+            conved_2 = F.relu(self.conv_2(embedded))
+            conved_3 = F.relu(self.conv_3(embedded))
+
+            #conved_n = [batch size, n_filters, sent len - filter_sizes[n] + 1]
+
+            pooled_0 = F.max_pool1d(conved_0, conved_0.shape[2]).squeeze(2)
+            pooled_1 = F.max_pool1d(conved_1, conved_1.shape[2]).squeeze(2)
+            pooled_2 = F.max_pool1d(conved_2, conved_2.shape[2]).squeeze(2)
+            pooled_3 = F.max_pool1d(conved_3, conved_3.shape[2]).squeeze(2)
+
+            #pooled_n = [batch size, n_fibatlters]
+
+            cat = self.dropout(torch.cat((pooled_0, pooled_1, pooled_2, pooled_3), dim = 1))
+
+            #cat = [batch size, n_filters * len(filter_sizes)]
+
+            result =  self.fc(cat)
+
+            #print(result.shape)
+
+            return result
+        
+
 # Create a producer
 def create_producer():
     try:
-        producer = Producer({"bootstrap.servers": "localhost:9092",
-                             "client.id": socket.gethostname(),
-                             "enable.idempotence": True,  # EOS processing
-                             "compression.type": "lz4",
-                             "batch.size": 64000,
-                             "linger.ms": 10,
-                             "acks": "all",  # Wait for the leader and all ISR to send response back
-                             "retries": 5,
-                             "delivery.timeout.ms": 1000})  # Total time to make retries
+        producer = KafkaProducer(bootstrap_servers='localhost:9092')        
     except Exception as e:
         print("Couldn't create the producer")
         producer = None
@@ -62,89 +118,116 @@ def get_id(url):
         return pth[-1]
 
 
-def get_comments(url, num_comment):
+# def get_comments(url, num_comment):
+#     response = youtube_service.commentThreads().list(
+#         part='snippet',
+#         maxResults=num_comment,
+#         textFormat='plainText',
+#         order='time',
+#         videoId=get_id(url)
+#     ).execute()
+
+#     results = response.get('items', [])
+
+#     # extract video comments
+#     authors = []
+#     authorUrls = []
+#     texts = []
+#     datetimes = []
+
+#     for item in results:
+#         authors.append(item['snippet']['topLevelComment']['snippet']['authorDisplayName'])
+#         authorUrls.append(item['snippet']['topLevelComment']['snippet']['authorChannelUrl'])
+#         texts.append(item['snippet']['topLevelComment']['snippet']['textDisplay'])
+#         datetimes.append(item['snippet']['topLevelComment']['snippet']['updatedAt'])
+
+#     dataFrame = pd.DataFrame({'datetime': datetimes, 'author': authors, 'authorUrl': authorUrls, 'comment': texts})
+
+#     return dataFrame
+
+
+def predict_label(text):
+    phoBertTokenizer = AutoTokenizer.from_pretrained('vinai/phobert-base')
+    device = torch.device('cpu')
+
+    EMBEDDING_DIM = 768
+    N_FILTERS = 32
+    FILTER_SIZES = [1,2,3,5]
+    OUTPUT_DIM = 3
+    DROPOUT = 0.1
+    PAD_IDX = phoBertTokenizer.pad_token_id
+    cnn = CNN(EMBEDDING_DIM, N_FILTERS, FILTER_SIZES, OUTPUT_DIM, DROPOUT, PAD_IDX)
+
+    # load model
+    phoBert = torch.load('/Users/macos/Documents/nhattan/CS431/models/phobert_cnn_model_part1_task2a_2.pt', map_location=device)
+    cnn = torch.load('/Users/macos/Documents/nhattan/CS431/models/phobert_cnn_model_part2_task2a_2.pt', map_location=device)
+    phoBert.eval()
+    cnn.eval()
+
+    # processing the text input    
+    processed_sentence = preprocessing(text)
+
+    # # Tokenize the sentence using PhoBERT tokenizer
+    phobert_inputs = phoBertTokenizer(processed_sentence, return_tensors="pt")
+
+
+    embedded = phoBert(phobert_inputs['input_ids'], phobert_inputs['attention_mask'])[0]
+    predictions = cnn(embedded)
+    predictions = predictions.detach().cpu().numpy()
+    predictions = np.argmax(predictions,axis=1).flatten()
+    labels = ['CLEAN', 'OFFENSIVE', 'HATE']
+
+    return labels[predictions[0]]
+
+def main():
+    video_link = "https://www.youtube.com/watch?v=TiEVqZ2Bc_c"
+    num_comment = 100
+
     response = youtube_service.commentThreads().list(
         part='snippet',
         maxResults=num_comment,
         textFormat='plainText',
         order='time',
-        videoId=get_id(url)
+        videoId=get_id(video_link)
     ).execute()
 
-    results = response.get('items', [])
-
-    # extract video comments
-    authors = []
-    authorUrls = []
-    texts = []
-    datetimes = []
-
-    for item in results:
-        authors.append(item['snippet']['topLevelComment']['snippet']['authorDisplayName'])
-        authorUrls.append(item['snippet']['topLevelComment']['snippet']['authorChannelUrl'])
-        texts.append(item['snippet']['topLevelComment']['snippet']['textDisplay'])
-        datetimes.append(item['snippet']['topLevelComment']['snippet']['updatedAt'])
-
-    dataFrame = pd.DataFrame({'datetime': datetimes, 'author': authors, 'authorUrl': authorUrls, 'comment': texts})
-
-    return dataFrame
+    # create kafka producer
+    producer = create_producer()
 
 
-# producer = create_producer()
-## Hate speech detection
-# load DNN model
-model_path = os.path.join(os.getcwd(), 'model/Text_CNN_model_PhoW2V.h5')
-model = tf.keras.models.load_model(model_path)
-tknz_path = os.path.join(os.getcwd(), 'model/tokenizer.pickle')
-with open(tknz_path, "rb") as f:
-    tokenizer = pickle.load(f)
-producer = KafkaProducer(bootstrap_servers='localhost:9092')
-response = youtube_service.commentThreads().list(
-    part='snippet',
-    textFormat='plainText',
-    videoId=get_id(video_link)
-).execute()
+    try:
+        while response:
+            results = response.get('items', [])
+            for item in results:
+                author = item['snippet']['topLevelComment']['snippet']['authorDisplayName']
+                authorurl = item['snippet']['topLevelComment']['snippet']['authorChannelUrl']
+                comment = item['snippet']['topLevelComment']['snippet']['textDisplay']
+                datetime = item['snippet']['topLevelComment']['snippet']['updatedAt']
 
-# response = youtube_service.liveChatMessages().list(
-#       part='snippet',
-#       maxResults=100,
-#       liveChatId=get_id(video_link)
-#   ).execute()
+                # dnn                
+                # CLEAN OR OFFENSIVE OR HATE
+                pred = predict_label(comment)                
 
-# extract video comments
-try:
-    while response:
-        results = response.get('items', [])
-        for item in results:
-            author = item['snippet']['topLevelComment']['snippet']['authorDisplayName']
-            authorurl = item['snippet']['topLevelComment']['snippet']['authorChannelUrl']
-            comment = item['snippet']['topLevelComment']['snippet']['textDisplay']
-            datetime = item['snippet']['topLevelComment']['snippet']['updatedAt']
+                record = {"author": author, "author_url": authorurl, "datetime": datetime, "raw_comment": comment,
+                            "label": pred}
+                record = json.dumps(record).encode("utf-8")
+                print('produce message')
+                print(record)
+                
+                producer.send(topic='detected', value=record)
+            if 'nextPageToken' in response:
+                response = youtube_service.commentThreads().list(
+                    part='snippet',
+                    textFormat='plainText',
+                    videoId=get_id(video_link),
+                    pageToken=response["nextPageToken"]
+                ).execute()
+            else:
+                break
+    except KeyboardInterrupt:
+        print('Stop flush!')
+        pass
 
-            # dnn
-            processed_comment = preprocessing(comment)
-            seq_comment = tokenizer.texts_to_sequences([processed_comment])
-            ds_comment = sequence.pad_sequences(seq_comment, maxlen=80)
-            pred = model.predict(ds_comment)
-            hsd_dt = pred.argmax(-1)
 
-            record = {"author": author, "datetime": datetime, "raw_comment": comment,
-                      "clean_comment": processed_comment, "label": int(hsd_dt[0])}
-            record = json.dumps(record).encode("utf-8")
-            print('produce message')
-            print(record)
-
-            #         producer.produce(topic="hsd",value=record)
-            producer.send(topic='detected', value=record)
-        if 'nextPageToken' in response:
-            response = youtube_service.commentThreads().list(
-                part='snippet',
-                textFormat='plainText',
-                videoId=get_id(video_link),
-                pageToken=response["nextPageToken"]
-            ).execute()
-        else:
-            break
-except KeyboardInterrupt:
-    print('Stop flush!')
-    pass
+if __name__ == "__main__":
+    main()
