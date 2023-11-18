@@ -27,7 +27,7 @@ spark.conf.set("spark.sql.legacy.timeParserPolicy","LEGACY")
 
 df = (spark.readStream.format('kafka')
       .option("kafka.bootstrap.servers", "localhost:9092") 
-      .option("subscribe", "detected") 
+      .option("subscribe", "rawData") 
       .option("startingOffsets", "latest")
       .load())
 
