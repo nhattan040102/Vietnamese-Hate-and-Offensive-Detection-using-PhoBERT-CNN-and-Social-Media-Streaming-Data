@@ -28,7 +28,20 @@ Author's github: https://github.com/kh4nh12
     bin/kafka-topics.sh --create --topic cleanData  --bootstrap-server localhost:9092
 ```
 
+- Run ```producer.py``` in ```HateSpeechDetectionApp``` folder to begin producing data to kafka ```rawData``` topic
+```bash
+    python HateSpeechDetectionApp/producer.py
+```
 
+- Run ```spark-flask.py``` in ```HateSpeechDetectionApp``` to set up the App, the data from the web will be retrieved from ```cleanData``` topic
+```bash
+    python HateSpeechDetectionApp/spark-flask.py
+```
+
+- Finally run ```streaming.py``` in ```HateSpeechDetectionApp``` so that Spark can process the streaming data in realtime and load it to the ```cleanData``` topic
+```bash
+    spark-submit streaming.py
+```
 
 
 

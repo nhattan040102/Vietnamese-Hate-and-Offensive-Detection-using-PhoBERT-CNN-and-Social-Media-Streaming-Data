@@ -181,7 +181,7 @@ def predict_label(text):
 
 def main():
     video_link = "https://www.youtube.com/watch?v=TiEVqZ2Bc_c"
-    num_comment = 100
+    num_comment = 5
 
     response = youtube_service.commentThreads().list(
         part='snippet',
@@ -214,14 +214,14 @@ def main():
                 print('produce message')
                 print(record)
                 
-                producer.send(topic='detected', value=record)
-            if 'nextPageToken' in response:
-                response = youtube_service.commentThreads().list(
-                    part='snippet',
-                    textFormat='plainText',
-                    videoId=get_id(video_link),
-                    pageToken=response["nextPageToken"]
-                ).execute()
+                producer.send(topic='hate_speech_detection', value=record)
+            # if 'nextPageToken' in response:
+            #     response = youtube_service.commentThreads().list(
+            #         part='snippet',
+            #         textFormat='plainText',
+            #         videoId=get_id(video_link),
+            #         pageToken=response["nextPageToken"]
+            #     ).execute()
             else:
                 break
     except KeyboardInterrupt:
