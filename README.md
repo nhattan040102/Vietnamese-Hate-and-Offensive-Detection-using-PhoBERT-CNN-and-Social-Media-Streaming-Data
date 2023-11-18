@@ -1,5 +1,5 @@
 # Vietnamese-Hate-and-Offensive-Detection-using-PhoBERT-CNN-and-Social-Media-Streaming-Data
-This is a repository implementing the code of the paper ```Vietnamese-Hate-and-Offensive-Detection-using-PhoBERT-CNN-and-Social-Media-Streaming-Data```  for CS431 final project
+This is a repository re-implementing the code of the paper ```Vietnamese-Hate-and-Offensive-Detection-using-PhoBERT-CNN-and-Social-Media-Streaming-Data```  for CS431 final project
 
 Link paper: https://arxiv.org/pdf/2206.00524.pdf
 
@@ -19,7 +19,18 @@ Author's github: https://github.com/kh4nh12
     pip install -r HateSpeechDetectionApp/requirements.txt
 ```
 
-- 
+- Set up kafka cluster locally: please refer to this document https://kafka.apache.org/quickstart#quickstart_startserver
+
+- Create topic for data storage (run this code in the kafka path you have just set up): 
+```bash
+    bin/kafka-topics.sh --create --topic rawData  --bootstrap-server localhost:9092
+
+    bin/kafka-topics.sh --create --topic cleanData  --bootstrap-server localhost:9092
+```
+
+
+
+
 
 # Evaluation on test dataset
 | Metric | Precision | Recall | F1-score | Support |
