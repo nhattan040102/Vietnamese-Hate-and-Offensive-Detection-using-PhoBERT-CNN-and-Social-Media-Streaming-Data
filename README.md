@@ -1,5 +1,13 @@
 # Vietnamese-Hate-and-Offensive-Detection-using-PhoBERT-CNN-and-Social-Media-Streaming-Data
-This is a repository implementing the code of the paper " Vietnamese-Hate-and-Offensive-Detection-using-PhoBERT-CNN-and-Social-Media-Streaming-Data" for CS431 final project
+This is a repository implementing the code of the paper ```Vietnamese-Hate-and-Offensive-Detection-using-PhoBERT-CNN-and-Social-Media-Streaming-Data```  for CS431 final project
+
+Link paper: https://arxiv.org/pdf/2206.00524.pdf
+
+Author's gmail: 18520908@gm.uit.edu.vn
+
+Author's github: https://github.com/kh4nh12
+
+# Usgae
 
 # Evaluation on test dataset
 | Metric | Precision | Recall | F1-score | Support |
