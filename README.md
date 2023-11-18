@@ -7,7 +7,19 @@ Author's gmail: 18520908@gm.uit.edu.vn
 
 Author's github: https://github.com/kh4nh12
 
-# Usgae
+# Reference
+- ```PhoBERT```: Pre-trained language models for Vietnamese - https://github.com/VinAIResearch/PhoBERT
+- ```Convolutional Neural Networks``` for Sentence Classification - https://github.com/yoonkim/CNN_sentence
+- ```Apache spark```: a unified engine for big data processing - https://spark.apache.org/docs/3.1.1
+- ```Apache kafka```: a distributed event-store and streaming platform: - https://kafka.apache.org/
+
+# Usage
+- Install necessary packages from requirements.txt file
+```bash
+    pip install -r HateSpeechDetectionApp/requirements.txt
+```
+
+- 
 
 # Evaluation on test dataset
 | Metric | Precision | Recall | F1-score | Support |

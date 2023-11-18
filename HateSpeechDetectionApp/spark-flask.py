@@ -37,7 +37,7 @@ def get_stream_data():
             #     print(df)
             #     continue
             if len(record.keys()) > 3:
-            	time_list.append(time.time())
+                time_list.append(time.time())
             yield (f"data:{json.dumps(record)}\n\n")
     except KeyboardInterrupt:
         df = pd.DataFrame({"time":time_list})
