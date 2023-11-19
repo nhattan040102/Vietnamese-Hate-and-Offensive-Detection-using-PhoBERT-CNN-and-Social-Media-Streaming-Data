@@ -196,7 +196,7 @@ def main():
 
 
     try:
-        while response:
+        
             results = response.get('items', [])
             for item in results:
                 author = item['snippet']['topLevelComment']['snippet']['authorDisplayName']
@@ -214,7 +214,7 @@ def main():
                 print('produce message')
                 print(record)
                 
-                producer.send(topic='hate_speech_detection', value=record)
+                producer.send(topic='rawData', value=record)
             # if 'nextPageToken' in response:
             #     response = youtube_service.commentThreads().list(
             #         part='snippet',
@@ -222,8 +222,7 @@ def main():
             #         videoId=get_id(video_link),
             #         pageToken=response["nextPageToken"]
             #     ).execute()
-            else:
-                break
+            
     except KeyboardInterrupt:
         print('Stop flush!')
         pass

@@ -11,9 +11,9 @@ import logging
 import threading
 import sys
 
-consumer = KafkaConsumer('anomalies', bootstrap_servers=['localhost:9092'])
+consumer = KafkaConsumer('cleanData', bootstrap_servers=['localhost:9092'])
 app = Flask(__name__)
-url = sys.argv[1]
+url = "https://www.youtube.com/watch?v=SOTamWNgDKc&t=27363s"
 time_list = []
 
 @app.route('/home')

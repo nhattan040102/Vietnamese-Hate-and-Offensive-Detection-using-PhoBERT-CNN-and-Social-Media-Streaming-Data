@@ -1,24 +1,30 @@
 import os
 import time
-
-SCALA_VERSION = '2.12'
-SPARK_VERSION = '3.1.2'
-
-os.environ['PYSPARK_SUBMIT_ARGS'] = f'--packages org.apache.spark:spark-sql-kafka-0-10_{SCALA_VERSION}:{SPARK_VERSION} pyspark-shell'
-
 import findspark
 import pyspark
-findspark.init()
-
 from pyspark.sql import SparkSession, DataFrame
 from pyspark.sql import functions as f
 from IPython.display import display, clear_output
 from pyspark.sql.streaming import DataStreamReader
+from pyspark.sql.types import StructType, StructField, LongType, IntegerType, StringType
+
+# os.environ['PYSPARK_SUBMIT_ARGS'] = f'--packages org.apache.spark:spark-sql-kafka-0-10_{SCALA_VERSION}:{SPARK_VERSION} pyspark-shell'
+
+findspark.init()
+
+SCALA_VERSION = '2.12'
+SPARK_VERSION = '3.1.2'
+
+packages = [
+    f'org.apache.spark:spark-sql-kafka-0-10_{SCALA_VERSION}:{SPARK_VERSION}',
+    'org.apache.kafka:kafka-clients:3.6.0'
+]
 
 spark = (SparkSession
          .builder
+         .master("local")
          .appName('hsd-spark-kafka')
-         .master('local[*]')
+         .config("spark.jars.packages", ",".join(packages))         
          .getOrCreate())
 
 timestampformat = "yyyy-MM-dd HH:mm:ss"
@@ -27,11 +33,11 @@ spark.conf.set("spark.sql.legacy.timeParserPolicy","LEGACY")
 
 df = (spark.readStream.format('kafka')
       .option("kafka.bootstrap.servers", "localhost:9092") 
-      .option("subscribe", "rawData") 
-      .option("startingOffsets", "latest")
+      .option("subscribe", "rawData1") 
+      .option("startingOffsets", "earliest")
+      .option("failOnDataLoss", "false")
       .load())
 
-from pyspark.sql.types import StructType, StructField, LongType, IntegerType, StringType
 
 schema_value = StructType(
     [StructField("author",StringType(),True),
@@ -43,6 +49,7 @@ schema_value = StructType(
 df_json = (df
            .selectExpr("CAST(value AS STRING)")
            .withColumn("value",f.from_json("value",schema_value)))
+
 df_column = (df_json.select(f.col("value.author").alias("user"),
 #                             f.col("value.date").alias("timestamp"),
                            f.to_timestamp(f.regexp_replace('value.datetime','[TZ]',' '),timestampformat).alias("timestamp"),
@@ -74,7 +81,7 @@ ds = (df_column
       .format("kafka") 
       .outputMode("append")
       .option("kafka.bootstrap.servers", "localhost:9092") 
-      .option("topic", "anomalies") 
+      .option("topic", "cleanData") 
       .option("checkpointLocation","checkpoints/df_column")
       .start())
 
@@ -83,7 +90,7 @@ ds_count = (df_count
       .writeStream \
       .format("kafka") \
       .option("kafka.bootstrap.servers", "localhost:9092") \
-      .option("topic", "anomalies") \
+      .option("topic", "cleanData") \
       .option("checkpointLocation", "checkpoints/df_count") \
       .outputMode("complete") \
       .start()
