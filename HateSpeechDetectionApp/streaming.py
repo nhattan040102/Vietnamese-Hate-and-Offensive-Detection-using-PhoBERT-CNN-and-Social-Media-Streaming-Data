@@ -33,7 +33,7 @@ spark.conf.set("spark.sql.legacy.timeParserPolicy","LEGACY")
 
 df = (spark.readStream.format('kafka')
       .option("kafka.bootstrap.servers", "localhost:9092") 
-      .option("subscribe", "rawData1") 
+      .option("subscribe", "rawData") 
       .option("startingOffsets", "earliest")
       .option("failOnDataLoss", "false")
       .load())
@@ -51,7 +51,6 @@ df_json = (df
            .withColumn("value",f.from_json("value",schema_value)))
 
 df_column = (df_json.select(f.col("value.author").alias("user"),
-#                             f.col("value.date").alias("timestamp"),
                            f.to_timestamp(f.regexp_replace('value.datetime','[TZ]',' '),timestampformat).alias("timestamp"),
                            f.col("value.raw_comment").alias("raw_comment"),
                            f.col("value.clean_comment").alias("clean_comment"),

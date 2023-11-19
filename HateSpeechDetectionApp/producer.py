@@ -179,9 +179,11 @@ def main():
                 record = {"author": author, "datetime": datetime, "raw_comment": comment, "clean_comment": preprocessing(comment),
                         "label": pred}
                 
-                record = json.dumps(record).encode("utf-8")        
-                producer.send(topic='rawData', value=record)
                 print(record)
+                
+                record = json.dumps(record, ensure_ascii=False).encode("utf-8")        
+                producer.send(topic='rawData', value=record)
+                
             
     except KeyboardInterrupt:
         print('Stop flush!')
