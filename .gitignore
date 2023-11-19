@@ -3,3 +3,6 @@ __pycache__/
 test/
 
 checkpoints/ 
+
+.DS_Store
+
