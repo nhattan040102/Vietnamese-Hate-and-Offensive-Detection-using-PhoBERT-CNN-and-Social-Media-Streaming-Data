@@ -118,34 +118,6 @@ def get_id(url):
         return pth[-1]
 
 
-# def get_comments(url, num_comment):
-#     response = youtube_service.commentThreads().list(
-#         part='snippet',
-#         maxResults=num_comment,
-#         textFormat='plainText',
-#         order='time',
-#         videoId=get_id(url)
-#     ).execute()
-
-#     results = response.get('items', [])
-
-#     # extract video comments
-#     authors = []
-#     authorUrls = []
-#     texts = []
-#     datetimes = []
-
-#     for item in results:
-#         authors.append(item['snippet']['topLevelComment']['snippet']['authorDisplayName'])
-#         authorUrls.append(item['snippet']['topLevelComment']['snippet']['authorChannelUrl'])
-#         texts.append(item['snippet']['topLevelComment']['snippet']['textDisplay'])
-#         datetimes.append(item['snippet']['topLevelComment']['snippet']['updatedAt'])
-
-#     dataFrame = pd.DataFrame({'datetime': datetimes, 'author': authors, 'authorUrl': authorUrls, 'comment': texts})
-
-#     return dataFrame
-
-
 def predict_label(text):
     phoBertTokenizer = AutoTokenizer.from_pretrained('vinai/phobert-base')
     device = torch.device('cpu')
@@ -174,14 +146,13 @@ def predict_label(text):
     embedded = phoBert(phobert_inputs['input_ids'], phobert_inputs['attention_mask'])[0]
     predictions = cnn(embedded)
     predictions = predictions.detach().cpu().numpy()
-    predictions = np.argmax(predictions,axis=1).flatten()
-    labels = ['CLEAN', 'OFFENSIVE', 'HATE']
+    predictions = np.argmax(predictions,axis=1).flatten()    
 
-    return labels[predictions[0]]
+    return int(predictions[0])
 
 def main():
-    video_link = "https://www.youtube.com/watch?v=TiEVqZ2Bc_c"
-    num_comment = 5
+    video_link = "https://www.youtube.com/watch?v=lhznO_xsbfU"
+    num_comment = 50
 
     response = youtube_service.commentThreads().list(
         part='snippet',
@@ -195,33 +166,22 @@ def main():
     producer = create_producer()
 
 
-    try:
-        
+    try:        
             results = response.get('items', [])
             for item in results:
-                author = item['snippet']['topLevelComment']['snippet']['authorDisplayName']
-                authorurl = item['snippet']['topLevelComment']['snippet']['authorChannelUrl']
+                author = item['snippet']['topLevelComment']['snippet']['authorDisplayName']            
                 comment = item['snippet']['topLevelComment']['snippet']['textDisplay']
                 datetime = item['snippet']['topLevelComment']['snippet']['updatedAt']
 
-                # dnn                
-                # CLEAN OR OFFENSIVE OR HATE
-                pred = predict_label(comment)                
+                # Assume you have your DNN prediction logic here
+                pred = predict_label(comment)
 
-                record = {"author": author, "author_url": authorurl, "datetime": datetime, "raw_comment": comment,
-                            "label": pred}
-                record = json.dumps(record).encode("utf-8")
-                print('produce message')
-                print(record)
+                record = {"author": author, "datetime": datetime, "raw_comment": comment, "clean_comment": preprocessing(comment),
+                        "label": pred}
                 
+                record = json.dumps(record).encode("utf-8")        
                 producer.send(topic='rawData', value=record)
-            # if 'nextPageToken' in response:
-            #     response = youtube_service.commentThreads().list(
-            #         part='snippet',
-            #         textFormat='plainText',
-            #         videoId=get_id(video_link),
-            #         pageToken=response["nextPageToken"]
-            #     ).execute()
+                print(record)
             
     except KeyboardInterrupt:
         print('Stop flush!')

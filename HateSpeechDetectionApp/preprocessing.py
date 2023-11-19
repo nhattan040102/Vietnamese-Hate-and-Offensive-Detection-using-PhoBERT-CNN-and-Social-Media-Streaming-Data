@@ -190,7 +190,7 @@ def annotations(dataset):
 
 
 def abbreviation_predict(t):
-    model_path = os.path.join(os.getcwd(), 'model/abb_model.sav')
+    model_path = os.path.join(os.getcwd(), 'abb_model.sav')
     loaded_model = joblib.load(model_path)
 
     da_path = os.path.join(os.getcwd(), 'dictionary/abbreviation_dictionary_vn.xlsx')
