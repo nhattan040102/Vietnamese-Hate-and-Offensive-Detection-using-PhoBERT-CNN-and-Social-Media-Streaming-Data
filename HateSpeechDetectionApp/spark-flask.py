@@ -11,7 +11,7 @@ import logging
 import threading
 import sys
 
-consumer = KafkaConsumer('cleanData', bootstrap_servers=['localhost:9092'])
+consumer = KafkaConsumer('cleanData', bootstrap_servers=['localhost:9092'], auto_offset_reset='earliest')
 app = Flask(__name__)
 url = "https://www.youtube.com/watch?v=lhznO_xsbfU"
 time_list = []
@@ -24,26 +24,18 @@ def home():
 def table_data():
     def get_stream_data():        
         try:
-            while True:
-                for msg in consumer:
-                    print('received')
-                    record = json.loads(msg.value.decode('utf-8'))
-                    if 'timestamp' in record:
-                        record['timestamp'] = record['timestamp'][:19]
-                    print(record)
-                    
-                    yield (f"data:{json.dumps(record)}\n\n")
+            for msg in consumer:
+                print('received')
+                record = json.loads(msg.value.decode('utf-8'))
+                if 'timestamp' in record:
+                    record['timestamp'] = record['timestamp'][:19]
+                print(record)
+                yield f"data:{json.dumps(record)}\n\n"
+        except KeyboardInterrupt:
+            print('Stop streaming data')
 
-                    time.sleep(10)
-        except KeyboardInterrupt:                                    
-            print('Stop streaming data')        
-    
     return Response(get_stream_data(),mimetype="text/event-stream")
 
             
 if __name__ == "__main__":
     app.run(debug=True)
-    df = pd.DataFrame({"time":time_list})
-    df.to_csv('HSD_time3.csv')
-    consumer.close()
-    print('Saved!')
