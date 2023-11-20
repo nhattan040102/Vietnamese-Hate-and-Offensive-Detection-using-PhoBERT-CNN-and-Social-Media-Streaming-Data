@@ -25,7 +25,7 @@ Author's github: https://github.com/kh4nh12
 ```bash
     bin/kafka-topics.sh --create --topic rawData  --bootstrap-server localhost:9092
 
-    bin/kafka-topics.sh --create --topic cleanData  --bootstrap-server localhost:9092
+    bin/kafka-topics.sh --create --topic anomalies  --bootstrap-server localhost:9092
 ```
 
 - Run ```producer.py``` in ```HateSpeechDetectionApp``` folder to begin producing data to kafka ```rawData``` topic

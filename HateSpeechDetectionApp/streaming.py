@@ -62,6 +62,12 @@ df_count = (df_column.groupBy('label').agg(f.count('label').alias('count'))
                         .when(df_column.label==0,'CLEAN')
                         .otherwise('HATE'))
            .select(f.col('sentiment'),f.col('count')))
+
+df_statistic = df_column.groupBy('label') \
+                       .agg(
+                           f.sum(f.when(f.col('label') == 0, 1).otherwise(0)).alias('CleanCount'),
+                           f.sum(f.when(f.col('label') == 1, 1).otherwise(0)).alias('OffensiveCount'),
+                           f.sum(f.when(f.col('label') == 2, 1).otherwise(0)).alias('HateCount'))
 '''
 df_haters = (df_column.select('user','label')
             .where(df_column.label != 0)
@@ -84,16 +90,29 @@ ds = (df_column
       .option("checkpointLocation","checkpoints/df_column")
       .start())
 
-ds_count = (df_count
-      .select(f.to_json(f.struct("sentiment","count")).alias("value"))
+# ds_count = (df_count
+#       .select(f.to_json(f.struct("sentiment","count")).alias("value"))
+#       .writeStream \
+#       .format("kafka") \
+#       .option("kafka.bootstrap.servers", "localhost:9092") \
+#       .option("topic", "cleanData") \
+#       .option("checkpointLocation", "checkpoints/df_count") \
+#       .outputMode("complete") \
+#       .start()
+# )
+
+df_statistic = (df_statistic
+      .select(f.to_json(f.struct('CleanCount', 'OffensiveCount', 'HateCount')).alias("value"))
       .writeStream \
       .format("kafka") \
       .option("kafka.bootstrap.servers", "localhost:9092") \
-      .option("topic", "cleanData") \
+      .option("topic", "statistic") \
       .option("checkpointLocation", "checkpoints/df_count") \
       .outputMode("complete") \
       .start()
 )
+
+
 '''
 # Show users commenting hate speech
 ds_haters = (df_haters

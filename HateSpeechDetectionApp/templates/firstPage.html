@@ -228,8 +228,8 @@
     });
 
     // SSE
-    var source = new EventSource("/table-data");
-    source.addEventListener(
+    var source1 = new EventSource("/table-data");
+    source1.addEventListener(
       "message",
       function (e) {
         console.log(e.data);
@@ -237,7 +237,7 @@
       false
     );
 
-    source.addEventListener(
+    source1.addEventListener(
       "open",
       function (e) {
         // Connection was opened.
@@ -245,7 +245,7 @@
       false
     );
 
-    source.addEventListener(
+    source1.addEventListener(
       "error",
       function (e) {
         if (e.readyState == EventSource.CLOSED) {
@@ -254,57 +254,73 @@
       },
       false
     );
-    source.onmessage = function (event) {
+    source1.onmessage = function (event) {
       const data = JSON.parse(event.data);
-
       // HSD_dataframe data
-      if (Object.keys(data).length > 3) {
-        // Count total comments.
-        total_comments += 1;
-        document.getElementById("totalcomments").innerHTML = total_comments;
 
-        // Add comments to table
-        var table = document.getElementById("comments-table");
-        var row = table.insertRow(1);
-        row.insertCell(0).innerHTML = data.user;
-        row.insertCell(1).innerHTML = data.timestamp;
-        row.insertCell(2).innerHTML = data.raw_comment;
-        int_label = parseInt(data.label, 10);
-        if (int_label == 0) {
-          row.insertCell(3).innerHTML = "CLEAN";
-        } else if (int_label == 1) {
-          row.insertCell(3).innerHTML = "OFFENSIVE";
-        } else {
-          row.insertCell(3).innerHTML = "HATE";
-        }
-
-        if (int_label === 2) {
-          // Add comments to table
-          var table1 = document.getElementById("usermosthsd");
-          var row1 = table1.insertRow(1);
-          row1.insertCell(0).innerHTML = data.user;
-          row1.insertCell(1).innerHTML = data.clean_comment;
-        }
-      } else if (Object.keys(data).length == 2) {
-        // HSD count dataframe data
-        if (data.sentiment.localeCompare("CLEAN") == 0) {
-          clean_comments = parseInt(data.count);
-          document.getElementById("cleancomments").innerHTML = clean_comments;
-        } else if (data.sentiment.localeCompare("OFFENSIVE") == 0) {
-          offensive_comments = parseInt(data.count);
-          document.getElementById("offensivecomments").innerHTML =
-            offensive_comments;
-        } else {
-          hate_comments = parseInt(data.count);
-          document.getElementById("hatecomments").innerHTML = hate_comments;
-        }
-        var flag = total_comments % 5;
-        if (flag == 0) {
-          xData = [hate_comments, offensive_comments, clean_comments];
-          myPieChart.data.datasets[0].data = xData;
-          myPieChart.update();
-        }
+      var table = document.getElementById("comments-table");
+      var row = table.insertRow(1);
+      row.insertCell(0).innerHTML = data.user;
+      row.insertCell(1).innerHTML = data.timestamp;
+      row.insertCell(2).innerHTML = data.raw_comment;
+      int_label = parseInt(data.label, 10);
+      if (int_label == 0) {
+        row.insertCell(3).innerHTML = "CLEAN";
+      } else if (int_label == 1) {
+        row.insertCell(3).innerHTML = "OFFENSIVE";
+        var table1 = document.getElementById("usermosthsd");
+        var row1 = table1.insertRow(1);
+        row1.insertCell(0).innerHTML = data.user;
+        row1.insertCell(1).innerHTML = data.clean_comment;
+      } else {
+        row.insertCell(3).innerHTML = "HATE";
       }
+
+    };
+
+    var source2 = new EventSource("/statistic-data");
+    source2.addEventListener(
+      "message",
+      function (e) {
+        console.log(e.data);
+      },
+      false
+    );
+
+    source2.addEventListener(
+      "open",
+      function (e) {
+        // Connection was opened.
+      },
+      false
+    );
+
+    source2.addEventListener(
+      "error",
+      function (e) {
+        if (e.readyState == EventSource.CLOSED) {
+          // Connection was closed.
+        }
+      },
+      false
+    );
+
+    source2.onmessage = function (event) {
+      const data = JSON.parse(event.data);
+      console.log(data)
+      document.getElementById("cleancomments").innerHTML = parseInt(data.CleanCount);
+      document.getElementById("offensivecomments").innerHTML = parseInt(data.OffensiveCount);
+      document.getElementById("hatecomments").innerHTML = parseInt(data.HateCount);
+
+      total_comments = data.CleanCount + data.OffensiveCount + data.HateCount;
+      document.getElementById("totalcomments").innerHTML = parseInt(total_comments);
+      clean_comments, offensive_comments, hate_comments = parseInt(data.CleanCount), parseInt(data.OffensiveCount), parseInt(data.HateCount)
+
+      xData = [clean_comments, offensive_comments, hate_comments];
+      myPieChart.data.datasets[0].data = xData;
+      myPieChart.update();
+
+
     };
   </script>
 </body>

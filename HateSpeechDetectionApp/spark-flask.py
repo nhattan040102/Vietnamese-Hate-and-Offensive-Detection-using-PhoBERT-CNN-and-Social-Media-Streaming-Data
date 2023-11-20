@@ -11,7 +11,8 @@ import logging
 import threading
 import sys
 
-consumer = KafkaConsumer('cleanData', bootstrap_servers=['localhost:9092'], auto_offset_reset='earliest')
+comment_consumer = KafkaConsumer('cleanData', bootstrap_servers=['localhost:9092'], auto_offset_reset='earliest')
+statistic_consumer = KafkaConsumer('statistic', bootstrap_servers=['localhost:9092'], auto_offset_reset='earliest')
 app = Flask(__name__)
 url = "https://www.youtube.com/watch?v=lhznO_xsbfU"
 time_list = []
@@ -22,9 +23,9 @@ def home():
 
 @app.route('/table-data', methods=['GET','POST'])
 def table_data():
-    def get_stream_data():        
+    def get_stream_data1():        
         try:
-            for msg in consumer:
+            for msg in comment_consumer:
                 print('received')
                 record = json.loads(msg.value.decode('utf-8'))
                 if 'timestamp' in record:
@@ -34,7 +35,21 @@ def table_data():
         except KeyboardInterrupt:
             print('Stop streaming data')
 
-    return Response(get_stream_data(),mimetype="text/event-stream")
+    return Response(get_stream_data1(),mimetype="text/event-stream")
+
+@app.route('/statistic-data', methods=['GET','POST'])
+def statistic_data():
+    def get_stream_data2():        
+        try:
+            for msg in statistic_consumer:
+                print('received')
+                record = json.loads(msg.value.decode('utf-8'))              
+                print(record)
+                yield f"data:{json.dumps(record)}\n\n"
+        except KeyboardInterrupt:
+            print('Stop streaming data')
+
+    return Response(get_stream_data2(),mimetype="text/event-stream")
 
             
 if __name__ == "__main__":
