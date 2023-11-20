@@ -18,6 +18,9 @@ from transformers import AutoTokenizer
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+import warnings
+
+warnings.filterwarnings('ignore') 
 
 # Build service for calling the Youtube API:
 ## Arguments that need to passed to the build function
@@ -61,36 +64,41 @@ class CNN(nn.Module):
 
         def forward(self, encoded):
 
-            #embedded = [batch size, sent len, emb dim]
+            
             embedded = self.fc_input(encoded)
-            #print(embedded.shape)
+            
+            max_kernel_size = max(self.conv_0.kernel_size[0],
+                             self.conv_1.kernel_size[0],
+                             self.conv_2.kernel_size[0],
+                             self.conv_3.kernel_size[0])
+            
+            padding = max_kernel_size - 1  # Adjust the padding based on your requirements
+            embedded = F.pad(embedded, (0, 0, padding, 0))
 
             embedded = embedded.permute(0, 2, 1)
-            #print(embedded.shape)
+            
 
-            #embedded = [batch size, emb dim, sent len]
+            
 
             conved_0 = F.relu(self.conv_0(embedded))
             conved_1 = F.relu(self.conv_1(embedded))
             conved_2 = F.relu(self.conv_2(embedded))
             conved_3 = F.relu(self.conv_3(embedded))
 
-            #conved_n = [batch size, n_filters, sent len - filter_sizes[n] + 1]
+            
 
             pooled_0 = F.max_pool1d(conved_0, conved_0.shape[2]).squeeze(2)
             pooled_1 = F.max_pool1d(conved_1, conved_1.shape[2]).squeeze(2)
             pooled_2 = F.max_pool1d(conved_2, conved_2.shape[2]).squeeze(2)
             pooled_3 = F.max_pool1d(conved_3, conved_3.shape[2]).squeeze(2)
 
-            #pooled_n = [batch size, n_fibatlters]
+            
 
             cat = self.dropout(torch.cat((pooled_0, pooled_1, pooled_2, pooled_3), dim = 1))
 
-            #cat = [batch size, n_filters * len(filter_sizes)]
+            
 
-            result =  self.fc(cat)
-
-            #print(result.shape)
+            result =  self.fc(cat)            
 
             return result
         
@@ -173,14 +181,15 @@ def main():
                 comment = item['snippet']['topLevelComment']['snippet']['textDisplay']
                 datetime = item['snippet']['topLevelComment']['snippet']['updatedAt']
 
+                print(comment)
                 # Assume you have your DNN prediction logic here
                 pred = predict_label(comment)
 
                 record = {"author": author, "datetime": datetime, "raw_comment": comment, "clean_comment": preprocessing(comment),
                         "label": pred}
                 
-                print(record)
-                
+                # print(record)
+
                 record = json.dumps(record, ensure_ascii=False).encode("utf-8")        
                 producer.send(topic='rawData', value=record)
                 
