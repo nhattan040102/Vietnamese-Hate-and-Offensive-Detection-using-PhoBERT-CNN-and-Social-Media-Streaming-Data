@@ -268,12 +268,12 @@
         row.insertCell(3).innerHTML = "CLEAN";
       } else if (int_label == 1) {
         row.insertCell(3).innerHTML = "OFFENSIVE";
+      } else {
+        row.insertCell(3).innerHTML = "HATE";
         var table1 = document.getElementById("usermosthsd");
         var row1 = table1.insertRow(1);
         row1.insertCell(0).innerHTML = data.user;
-        row1.insertCell(1).innerHTML = data.clean_comment;
-      } else {
-        row.insertCell(3).innerHTML = "HATE";
+        row1.insertCell(1).innerHTML = data.raw_comment;
       }
 
     };
@@ -308,15 +308,25 @@
     source2.onmessage = function (event) {
       const data = JSON.parse(event.data);
       console.log(data)
-      document.getElementById("cleancomments").innerHTML = parseInt(data.CleanCount);
-      document.getElementById("offensivecomments").innerHTML = parseInt(data.OffensiveCount);
-      document.getElementById("hatecomments").innerHTML = parseInt(data.HateCount);
+      if (data.sentiment == 'CLEAN') {
+        document.getElementById("cleancomments").innerHTML = parseInt(data.count);
+        clean_comments = parseInt(data.count);
+      }
+      else if (data.sentiment == 'OFFENSIVE') {
+        document.getElementById("offensivecomments").innerHTML = parseInt(data.count);
+        offensive_comments = parseInt(data.count);
+      }
 
-      total_comments = data.CleanCount + data.OffensiveCount + data.HateCount;
+      else {
+        document.getElementById("hatecomments").innerHTML = parseInt(data.count);
+        hate_comments = parseInt(data.count);
+      }
+
+
+      total_comments = clean_comments + offensive_comments + hate_comments
       document.getElementById("totalcomments").innerHTML = parseInt(total_comments);
-      clean_comments, offensive_comments, hate_comments = parseInt(data.CleanCount), parseInt(data.OffensiveCount), parseInt(data.HateCount)
 
-      xData = [clean_comments, offensive_comments, hate_comments];
+      xData = [hate_comments, offensive_comments, clean_comments];
       myPieChart.data.datasets[0].data = xData;
       myPieChart.update();
 

@@ -13,6 +13,12 @@ Author's github: https://github.com/kh4nh12
 - ```Apache spark```: a unified engine for big data processing - https://spark.apache.org/docs/3.1.1
 - ```Apache kafka```: a distributed event-store and streaming platform: - https://kafka.apache.org/
 
+# Project architecture
+![Alt text](imgs/architecture.png)
+
+# Model architecture
+![Alt text](imgs/model.png)
+
 # Usage
 - Install necessary packages from requirements.txt file
 ```bash
@@ -54,3 +60,7 @@ Author's github: https://github.com/kh4nh12
 | Accuracy | | | 0.8527 | 6680 |
 | Macro Avg | 0.6231 | 0.6253 | 0.6239 | 6680 |
 | Weighted Avg | 0.8531 | 0.8527 | 0.8528 | 6680 |
+
+# Compare with other studies
+![Alt text](imgs/compare.png)
+- Outperfrom other approachs related to VietNamese Hate Speech Detection

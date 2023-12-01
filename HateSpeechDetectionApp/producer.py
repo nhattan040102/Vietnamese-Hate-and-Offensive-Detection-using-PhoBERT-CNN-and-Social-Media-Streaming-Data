@@ -160,7 +160,7 @@ def predict_label(text):
 
 def main():
     video_link = "https://www.youtube.com/watch?v=lhznO_xsbfU"
-    num_comment = 5
+    num_comment = 50
 
     response = youtube_service.commentThreads().list(
         part='snippet',
